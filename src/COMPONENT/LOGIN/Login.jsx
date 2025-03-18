@@ -1,0 +1,198 @@
+
+
+import React, { useContext, useEffect, useRef, useState } from 'react'
+
+
+import { RotatingLines } from 'react-loader-spinner'
+import {  useFormik } from 'formik'
+import axios from 'axios'
+import { myContext } from '../AUTH-CONTXT/AutheContext'
+import LoginCss from "./Login.module.css"
+import { Link, useNavigate } from 'react-router-dom'
+import imgLogo from "../IMAGES/freshcart-logo.svg";
+
+import Aos from 'aos'
+import "aos/dist/aos.css"
+
+
+function Login() {
+
+  let { myToken , setMyToken } = useContext( myContext )
+  const [isLoding, setisLoding] = useState(false)
+  let [ isError , setIsError] = useState( false )
+  let [ isSucces , setIsSucces ] = useState()
+
+  useEffect( ()=>{
+                      Aos.init({ easing: 'ease-in-out', duration : 1500})
+  } , [])
+
+
+
+  let myNavigate = useNavigate()
+
+  let focusInput = useRef()
+
+  useEffect( ()=>{
+    focusInput.current.focus()
+  } , [] )
+
+
+
+
+  async function sendUserData( values ) {
+    setisLoding(true)
+    await axios.post("https://ecommerce.routemisr.com/api/v1/auth/signin" , values )
+    .then( (res)=>{
+      setisLoding(false)
+      setIsSucces(res.data.message)
+            console.log("in cacein sucses" , res);
+            console.log("myToken" , res.data.token);
+            if ( res.data.token ) {
+              localStorage.setItem("tkn", res.data.token);
+              setMyToken(localStorage.getItem("tkn"))
+              console.log("تم تخزين التوكن بنجاح:", res.data.token);
+            } else {
+              console.log("لم يتم إرسال التوكن من الخادم");
+            }
+            
+            console.log("hgsfgsgfsytrw" , localStorage.getItem("tkn"));
+            
+            setTimeout(() => {
+              myNavigate("/Home")
+            }, 3000);
+            
+      } ).catch( (err)=>{
+        setIsError(err.response.data.message)
+        setisLoding(false)
+        console.log("in cace in error" , err);
+
+        setTimeout(() => {
+          setIsError(false)
+          }, 3000);
+          
+      } )
+
+  }
+    
+
+
+
+            const myFormik = useFormik( {
+              initialValues : {
+                
+                email: "",
+                
+                password: "",
+
+              }  ,
+
+              onSubmit : sendUserData ,
+              
+              
+                
+
+              validate : function(values){
+
+                const error = {}
+                
+                let regxPassword = /^[A-Za-z0-9]{6,18}[@#$%^&*]$/
+
+
+
+
+                if (values.email.includes("@") !== true && values.email.includes(".") !== true) {
+                  error.email = " The email must contain '@' and also include the letter `.` "
+                }
+
+                if (regxPassword.test(values.password) === false) {
+                  error.password = "The password must be between 6 and 18 characters long and end with one of the following special characters : @ , # , $ , % , ^ , & , *"
+                }
+
+
+
+                return error
+              }
+            } )
+
+
+
+
+    return <>
+
+<div className=' bg-gray-100 min-h-screen flex justify-center items-center'>
+  
+<form  onSubmit={myFormik.handleSubmit}  className={ LoginCss.myForm + ' mt-24 mb-10 drop-shadow-lg w-[75%] bg-white m-auto p-8 rounded-lg border' }>
+              {isSucces  ? <p className=' bg-sky-700 text-white p-7  m-auto rounded-2xl font-bold text-center'>login successful! You have successfully registered on the website.</p> : ""}
+              {isError  ? <p className=' bg-red-700 text-white p-7 w-[75%] m-auto rounded-2xl font-bold text-center'>{isError} </p> : ""}
+
+      <div className={LoginCss.allInput + " space-y-12 container m-auto "}>
+
+        <div className=" pb-12 w-auto">
+        <div className=' text-center  flex flex-col items-center p-3'>
+            <img src={imgLogo} alt="Logo" />
+          </div>
+          <div className="imgLogin w-[50%] m-auto">
+    <img src={ require("../IMAGES/58703103-486b-47aa-942d-1e622dcb529a.jpg")} className=' w-full' alt="" />
+  </div>
+            <div className="sm:col-span-3">
+              <label  htmlFor="email" className="block text-sm/6 font-medium ">
+              Email address
+              </label>
+              <div className="mt-2">
+                <input
+                ref={ focusInput }
+                  value={myFormik.values.email}
+                  onChange={myFormik.handleChange}
+                  id="email"
+                  type="email"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-sm/6"
+                />
+                              {myFormik.errors.email && myFormik.touched.email ? <div className="text-red-600">{myFormik.errors.email}</div>: ""}
+              </div>
+            </div>
+
+            <div className="sm:col-span-3 mt-2">
+              <label  htmlFor="password" className="block text-sm/6 font-medium  ">
+              Password
+              </label>
+              <div className="mt-2">
+                <input
+                value={myFormik.values.password}
+                  onChange={myFormik.handleChange}
+                  id="password"
+                  type="password"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-sm/6"
+                />
+                {myFormik.errors.password && myFormik.touched.password ? <div className=' text-red-600'>{myFormik.errors.password}</div> : ""}
+              </div>
+            </div>
+
+            <div className=' mt-3 '>
+            <Link
+                  to={"/PasswordReset"}
+                  className="text-red-500 font-semibold text-lg hover:text-red-700 transition duration-300 ease-in-out"
+                >
+                  Forgot Password
+                </Link>            </div>
+          <button type='submit' className=' py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mt-5 w-full capitalize flex justify-center items-center'> 
+            {isLoding ?  <RotatingLines
+                visible={true}
+                height="30"
+                width="30"
+                color=""
+                strokeWidth="5"
+                animationDuration="0.75"
+                ariaLabel="rotating-lines-loading"
+                strokeColor = "blue"
+                wrapperStyle={{}}
+                wrapperClass=""
+                /> : "login" }  </button>
+          </div>
+        </div>
+    </form>
+</div>
+    
+    </>
+}
+
+export default Login
