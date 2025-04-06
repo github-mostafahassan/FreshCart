@@ -4,7 +4,6 @@ import axios from 'axios'
 import React, { useContext, useState } from 'react'
 import { cartContext } from '../CART-CONTEXT/CartContext'
 import { useFormik } from 'formik'
-import { error } from 'ajv/dist/vocabularies/applicator/dependencies'
 import toast from 'react-hot-toast'
 import { RotatingLines } from 'react-loader-spinner'
 import { useNavigate } from 'react-router-dom'
@@ -58,20 +57,31 @@ function Payment() {
                 onSubmit : confermPayment , 
 
 
-                // validate : function (values) {
+                validate : function (values) {
+                    let error = {}
                     
-                //     let error = {}
-
-
-                //     let regexPhone = /^[01][0125][0-9]{8}$/
-
-                //     if (regexPhone.test( values.shippingAddress.phone ) !== true) {
-                //         error.phone = "Phone number does not match the required format. Please check and try again"
-                //     }
-
-
-                //     return error
-                // }
+                    let redxPone = /^01[0125][0-9]{8}$/
+                    let regxCity = /^[a-zA-Z0-9\s]{1,}$/
+                    let regxDetails = /^[a-zA-Z0-9\s.,;!?'-]{1,}$/
+                    
+                    
+                    
+    
+                    if (redxPone.test(values.phone) === false) {
+                        error.phone = "Please make sure to enter your phone number"
+                    }
+    
+                    if( regxCity.test(values.city) !== true){
+                        error.city = "City is required"
+                    }
+    
+                    if( regxDetails.test(values.details) !== true){
+                        error.details = "details is required"
+                    }
+    
+    
+                    return error
+                }
 
             } )
 
@@ -85,16 +95,20 @@ function Payment() {
                 
 
                 <label htmlFor="phone" > phone : </label>
-                <input name='phone' value={myFormikPayment.values.phone} onChange={myFormikPayment.handleChange} type="text" id="phone"  className=' mb-3 mt-1 w-full border rounded-lg focus:outline:2 focus:outline-blue-600 p-2 ' />
-                {/* { myFormikPayment.errors.phone ? <p className=' text-red-600'>mostafa</p> : "" } */}
+                <input name='phone' value={myFormikPayment.values.phone} onChange={myFormikPayment.handleChange} type="text" id="phone"  className=' mb-3 mt-1 w-full border rounded-lg focus:outline:2 shadow-md focus:outline-blue-600 p-2 ' />
+                {myFormikPayment.errors.phone  && myFormikPayment.touched.phone ? <p className=' text-red-500'>{myFormikPayment.errors.phone}</p> : ""} 
 
 
                 <label htmlFor="city" > city : </label>
-                <input value={myFormikPayment.values.city} onChange={myFormikPayment.handleChange} name="city" id="city" className=' mb-3 mt-1 w-full border rounded-lg focus:outline:2 focus:outline-blue-600 p-2 ' />
-                
+                <input value={myFormikPayment.values.city} onChange={myFormikPayment.handleChange} name="city" id="city" className=' mb-3 mt-1 w-full border rounded-lg focus:outline:2 shadow-md focus:outline-blue-600 p-2 ' />
+                { myFormikPayment.errors.city && myFormikPayment.touched.city ? <p className=' text-red-500'>{myFormikPayment.errors.city}</p> : "" }
+
+
+
                 <label htmlFor="details" className='details'> details : </label>
-                <textarea value={myFormikPayment.values.details} onChange={myFormikPayment.handleChange} name="details" id="details" className=' mb-3 mt-1 w-full border rounded-lg focus:outline:2 focus:outline-blue-600 p-2 '>  </textarea>
-                
+                <textarea value={myFormikPayment.values.details} onChange={myFormikPayment.handleChange} name="details" id="details" className=' mb-3 mt-1 w-full border rounded-lg focus:outline:2 shadow-md focus:outline-blue-600 p-2 '>  </textarea>
+                { myFormikPayment.errors.details && myFormikPayment.touched.details ? <p className=' text-red-500'>{myFormikPayment.errors.details}</p> : "" }
+
 
             <button
                 type="submit"

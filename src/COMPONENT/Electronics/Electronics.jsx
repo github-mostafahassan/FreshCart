@@ -33,16 +33,9 @@ function Electronics() {
         return await axios.get("https://ecommerce.routemisr.com/api/v1/products")
     }
 
-    let { data, isLoading, isError } = useQuery("getAllProuduct", getAllProuduct)
-
-    console.log("daaaaaaa" , data);
-    
+    let { data, isLoading } = useQuery("getAllProuduct", getAllProuduct)
 
 
-    if (isError) {
-        return console.log(isError);
-        
-    }
 
     if (isLoading) {
         return <Loding />

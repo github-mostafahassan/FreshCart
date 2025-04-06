@@ -23,7 +23,6 @@ function UpdatePassword() {
                      
                     let responce = await  axios.put("https://ecommerce.routemisr.com/api/v1/auth/resetPassword" , value )
 
-                    console.log("is sacsesfoly" , );
                     setIsLoding(false)
                     if (responce.data.token) {
                         toast.success("The password has been changed successfully" , { duration : 1500})
@@ -35,7 +34,6 @@ function UpdatePassword() {
                     
                 }
                 catch(err){
-                        console.log(err);
                         setIsLoding(false)
                         toast.error("There was an issue, and the password could not be changed" , { duration : 1500})
                 }
@@ -54,7 +52,7 @@ function UpdatePassword() {
                 validate : function (values) {
                     const error = {}
                         
-                    let regxNowPassword = /^[A-Za-z0-9]{6,18}[@#$%^&*]$/
+                    let regxNowPassword = /^[A-Za-z0-9]{6,18}[@#$%^&*]{0,}$/
 
                         if (values.email.includes("@") !== true && values.email.includes(".") !== true) {
                         error.email = " Invalid email format "

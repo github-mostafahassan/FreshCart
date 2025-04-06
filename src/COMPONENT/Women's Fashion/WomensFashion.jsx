@@ -15,8 +15,7 @@ import { cartContext } from '../CART-CONTEXT/CartContext'
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import 'react-lazy-load-image-component/src/effects/blur.css';
-import "aos/dist/aos.css"
-import SlyderProduct from '../SLYDER-PRODUCT/SlyderProduct'
+
 
 
 function WomensFashion() {
@@ -31,7 +30,7 @@ function WomensFashion() {
         return await axios.get("https://ecommerce.routemisr.com/api/v1/products")
     }
 
-    let { data, isLoading, isError } = useQuery("getAllProuduct", getAllProuduct)
+    let { data, isLoading } = useQuery("getAllProuduct", getAllProuduct)
 
 
 

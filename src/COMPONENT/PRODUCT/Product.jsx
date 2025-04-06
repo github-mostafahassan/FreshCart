@@ -1,22 +1,19 @@
 import axios from 'axios'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { useQuery } from 'react-query'
 import ProductCss from "./Product.module.css"
 import Loding from '../LODING/Loding'
 import { Link } from 'react-router-dom'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-import CategorySlyder from '../CATEGORY-SLYDER/CategorySlyder'
+
 import { cartContext } from '../CART-CONTEXT/CartContext'
-import toast from 'react-hot-toast'
-import Foter from '../FOTER/Foter'
+
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-// import { LazyLoadImage } from 'react-lazy-load-image-component';
+
 import 'react-lazy-load-image-component/src/effects/blur.css';
-import Aos from 'aos'
-import "aos/dist/aos.css"
-import SlyderProduct from '../SLYDER-PRODUCT/SlyderProduct'
+
+
 
 
 function AllProduct() {
@@ -31,20 +28,15 @@ function AllProduct() {
         return await axios.get("https://ecommerce.routemisr.com/api/v1/products")
     }
 
-    let { data, isLoading, isError } = useQuery("getAllProuduct", getAllProuduct)
-
-    console.log("daaaaaaa" , data);
-    
+    let { data, isLoading } = useQuery("getAllProuduct", getAllProuduct)
 
 
-    if (isError) {
-        return console.log(isError);
-        
-    }
 
     if (isLoading) {
         return <Loding />
     }
+
+    
 
     var settings = {
         dots: true,
@@ -62,8 +54,6 @@ function AllProduct() {
         await addProductInWishList(productId)
         
     }
-
-
 
     
     

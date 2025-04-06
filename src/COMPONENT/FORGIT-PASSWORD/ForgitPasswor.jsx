@@ -30,11 +30,8 @@ function ForgitPasswor() {
                 setIsLoding(false)
                 myNavigate("/PasswordReset/VerifyResetCode")
             }, 1500);
-            console.log("response " , res);
-            
         } ) .catch( (err)=>{
             
-            console.log( "errorrrrr" , err );
             setTimeout(() => {
                 setIsLoding(false)
             }, 1500);

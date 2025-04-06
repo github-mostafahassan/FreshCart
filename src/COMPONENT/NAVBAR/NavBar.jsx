@@ -22,13 +22,12 @@ function NavBar() {
     function SignOut() {
         MyNaviggate("/Login");
         localStorage.removeItem("tkn");
-        // localStorage.removeItem("tokn");
 
     }
 
     return (
         <>
-            <Disclosure as="nav" className={ NavBarCSS.nav + "  fixed top-0 left-0 right-0 z-50 shadow-xl" } >
+            <Disclosure as="nav" className={ NavBarCSS.nav + "  fixed top-0 left-0 right-0 z-50 shadow-xl bg-gray-600" } >
                 <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                     <div className="relative flex h-16 items-center  justify-between">
                         <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -49,6 +48,7 @@ function NavBar() {
                                         <NavLink className='text-white hover:text-green-300' to="/Brandes">Brands</NavLink>
                                         <NavLink className='text-white hover:text-green-300' to="/Cart">Cart </NavLink>
                                         <NavLink className='text-white hover:text-green-300' to="/Wishlist">Wishlist </NavLink>
+                                        <NavLink className='text-white hover:text-green-300' to="/allOrders">All Orders </NavLink>
                                     </div>
                                 ) : ""}
                             </div>
@@ -84,6 +84,12 @@ function NavBar() {
                             </NavLink>
                             <NavLink to="/Cart" className="text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-green-600">
                                 Cart
+                            </NavLink>
+                            <NavLink to="/Wishlist" className="text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-green-600">
+                            Wishlist
+                            </NavLink>
+                            <NavLink to="/allOrders" className="text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-green-600">
+                            All Orders
                             </NavLink>
                         </div>
                     </DisclosurePanel>

@@ -34,7 +34,6 @@ function VerifyResetCode() {
             
         } ).catch( (err)=>{
             setIsLoding(false)
-            console.log(err);
             toast.error("The reset code is incorrect. Please check and try again" , { duration : 1500})
             
         } )

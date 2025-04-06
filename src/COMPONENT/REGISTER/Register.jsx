@@ -1,12 +1,12 @@
 
 
-import React, { useContext, useEffect, useRef } from 'react'
+import React, {  useEffect, useRef } from 'react'
 
 import RegisterCss from "./Register.module.css"
 import {  useFormik } from 'formik'
 import axios from 'axios'
-import { myContext } from '../AUTH-CONTXT/AutheContext'
-import { useNavigate } from 'react-router-dom'
+// import { myContext } from '../AUTH-CONTXT/AutheContext'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { RotatingLines } from 'react-loader-spinner'
 import imgLogo from "../IMAGES/freshcart-logo.svg";
@@ -16,7 +16,7 @@ import "aos/dist/aos.css"
 
 function Register() {
 
-  let { myToken , setMyToken } = useContext( myContext )
+  // let { myToken , setMyToken } = useContext( myContext )
   
   let [ isSucces , setIsSucces ] = useState()
   let [ isError , setIsError] = useState( false )
@@ -39,19 +39,14 @@ function Register() {
       await axios.post("https://ecommerce.routemisr.com/api/v1/auth/signup" , values)
       .then( (res)=>{
         setIsLoding(false)
-            console.log("in cacein sucses" , res);
-
             setIsSucces(res.data.message)
-
             setTimeout(() => {
-              // setIsSucces(false)
               myNavigate("/Login")
-            }, 3000);
+            }, 500);
             
       } ).catch( (err)=>{
         setIsLoding(false)
         setIsError(err.response.data.message)
-          console.log("in cace in error" , err);
 
            setTimeout(() => {
             setIsError(false)
@@ -86,14 +81,14 @@ function Register() {
                 const error = {}
                 
                 let regxName = /^[A-Za-z]{2,18}$/
-                let regxPassword = /^[A-Za-z0-9]{6,18}[@#$%^&*]$/
+                let regxPassword = /^[A-Za-z0-9]{6,}[@#$%^&*]{0,}$/
                 let redexPhone = /^01[0125][0-9]{8}$/
 
                 if (regxName.test(values.name) === false) {
                   error.name = "The username must be between 5 and 18 letters and contain only alphabets!"
                 }
 
-                if (values.email.includes("@") !== true && values.email.includes(".") !== true) {
+                if (values.email.includes("@") !== true && values.email.includes(".") !== true ) {
                   error.email = " The email must contain '@' and also include the letter `.` "
 
                 }
@@ -120,12 +115,36 @@ function Register() {
     return <>
 
 <div className=' bg-gray-100 min-h-screen flex justify-center items-center'>
-<form  onSubmit={myFormik.handleSubmit}  className={ RegisterCss.myForm + ' mt-24 mb-10 drop-shadow-2xl w-[75%] border shadow-lg bg-white m-auto p-8 rounded-lg'}>
+
+
+<form  onSubmit={myFormik.handleSubmit}  className={ RegisterCss.myForm + ' mb-10 drop-shadow-2xl w-[75%] border shadow-lg bg-white m-auto p-8 rounded-lg'}>
               {isSucces  ? <p className=' bg-sky-700 text-white p-7  m-auto rounded-2xl font-bold text-center '>Registration successful! You have successfully registered on the website.</p> : ""}
               {isError  ? <p className=' bg-red-700 text-white p-7 w-[75%] m-auto rounded-2xl font-bold text-center'>{isError} </p> : ""}
 
+              <div className='  mt-16 border  shadow-lg p-2 rounded-lg '>
+            <h2 className=' text-center text-blue-600 rounded-t-lg text-2xl bg-gray-100 border-t-4 p-3 border-t-blue-500'> Registration Guidelines </h2>
+            <ul className=' p-2'>
+              <li className=' p-2 border-b'>
+                    Please enter a username with at least 2 characters and a maximum of 18 characters, using only English letters."
+              </li>
+              <li className=' p-2 border-b flex flex-col'>
+                    Password must be at least 6 characters long and may include letters, numbers, and special characters like @#$%^&*."   
+                    <span>Example of a valid password: Pass155%</span>
+                    </li>
+              <li className=' p-2'>
+                    The phone number must start with 01, followed by one of the digits 0, 1, 2, or 5,
+              </li>
+            </ul>
+      </div>
+
+
+
       <div className={RegisterCss.allInput + " space-y-12 container m-auto "}>
-        <div className=" pb-12 w-auto ">
+
+
+      
+
+        <div className=" w-auto ">
           <div className=' text-center  flex flex-col items-center p-3'>
             <img src={imgLogo} alt="Logo" />
           </div>
@@ -145,6 +164,7 @@ function Register() {
                   onChange={myFormik.handleChange}
                   id="name"
                   type="text"
+                  placeholder='Enter your username (2 to 18 characters, letters only)'
                   className="block shadow-md w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-sm/6"
                 />
                 
@@ -158,7 +178,8 @@ function Register() {
               </label>
               <div className="mt-2">
                 <input
-                value={myFormik.values.email}
+                placeholder=' Enter your Email Address'
+                    value={myFormik.values.email}
                   onChange={myFormik.handleChange}
                   id="email"
                   type="email"
@@ -174,7 +195,8 @@ function Register() {
               </label>
               <div className="mt-2">
                 <input
-                value={myFormik.values.password}
+                    placeholder="Enter password (at least 6 characters, letters, numbers, and special characters)" 
+                    value={myFormik.values.password}
                   onChange={myFormik.handleChange}
                   id="password"
                   type="password"
@@ -190,6 +212,7 @@ function Register() {
               </label>
               <div className="mt-2">
                 <input
+                placeholder=' Re-enter your password'
                 value={myFormik.values.rePassword}
                 onChange={myFormik.handleChange}
                   id="rePassword"
@@ -209,6 +232,7 @@ function Register() {
               </label>
               <div className="mt-2">
                 <input
+                placeholder='Enter your phone number'
                   value={myFormik.values.phone}
                   onChange={myFormik.handleChange}
                   id="phone"
@@ -233,6 +257,7 @@ function Register() {
                            wrapperClass=""
                            /> : "Regaster" } </button>
         </div>
+            <p>Already have an account ? <Link className=' text-blue-500' to={"/Login"}>Log In</Link></p>
         </div>
         
     </form>

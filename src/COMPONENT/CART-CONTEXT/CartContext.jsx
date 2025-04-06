@@ -1,7 +1,7 @@
 
 
 import axios from 'axios'
-import React, { Children, createContext, useState } from 'react'
+import React, {  createContext, useState } from 'react'
 import toast from 'react-hot-toast'
 
 export let cartContext = createContext()
@@ -13,6 +13,7 @@ function CartContextProvider( {children} ) {
         let  [ numOfCartItems , setNumOfCartItems ] = useState(0)
         let  [ totalCartPryse , setTotalCartPryse ] = useState(0)
         let  [ cartId , setCartId ] = useState(null)
+        let  [ userId , setUserId ] = useState(null)
         let  [ statuseMaseg , setStatuseMaseg] = useState("")
     
 
@@ -36,12 +37,10 @@ function CartContextProvider( {children} ) {
 
         async function upditingCart( id , count ) {
             await axios.put(`https://ecommerce.routemisr.com/api/v1/cart/${id}` , {
-
                     "count" : count
             } , {
                 headers : { token : localStorage.getItem("tkn")}
             } ).then( (res)=>{
-
                 setCaunt(caunt)
                 setAllProduct(res)
                 setNumOfCartItems(res.data.numOfCartItems)
@@ -50,7 +49,6 @@ function CartContextProvider( {children} ) {
             } )
             .catch( (err)=>{
                 console.log(err);
-                
             } )
         }
 
@@ -60,12 +58,11 @@ function CartContextProvider( {children} ) {
             await axios.delete(`https://ecommerce.routemisr.com/api/v1/cart/${id}` , {
                 headers : { token : localStorage.getItem("tkn") }
             }).then( (res)=>{
-                console.log(res);
+                toast.success("The product has been successfully deleted.." , {duration : 3000 })
                 
             } )
             .catch( (err)=>{
-                console.log(err);
-                
+                toast.error("An error occurred. The product was not deleted.." , {duration : 3000 })                
             } )
         }
 
@@ -73,13 +70,13 @@ function CartContextProvider( {children} ) {
             await axios.delete("https://ecommerce.routemisr.com/api/v1/cart" , {
                 headers : { token : localStorage.getItem("tkn")}
             }).then( (res)=>{
-                console.log(res);
                 setAllProduct([])
                 setNumOfCartItems(0)
                 setTotalCartPryse(0)
+                toast.success( "The basket has been emptied of all products.." , {duration : 3000 })                
                 
             } ).catch( (err)=>{
-                console.log(err);
+                toast.error("An error occurred. The cart was not emptied of products" , {duration : 3000 })                
                 
             } )
         }
@@ -92,11 +89,9 @@ function CartContextProvider( {children} ) {
             } , {
               headers : { token : localStorage.getItem("tkn")}
             }).then( (res)=>{
-                console.log("ss" ,res);
-                
                 if (res.data.status === "success") {
                     setStatuseMaseg(res.data.status)
-                    toast.success(res.data.message)
+                    toast.success(res.data.message , {duration : 3000 })
                 }
                 
             } ).catch( (err)=>{
@@ -107,25 +102,12 @@ function CartContextProvider( {children} ) {
 
 
 
-          async function RemoveProductFromWishlist(wishListId) {
-            await axios.delete(`https://ecommerce.routemisr.com/api/v1/wishlist/${wishListId}` , {
-                headers : { token : localStorage.getItem("tkn")}
-            }).then ( (res)=>{
-                console.log(  res);
-                // QueryClient.invalidateQueries("getAllProductInWishList");
-                
-            } ).catch( (err)=>{
-                console.log(err);
-                
-            } )
-        }
 
 
 
-     
         
 
-    return <cartContext.Provider value={ { addProductInWishList , setStatuseMaseg , statuseMaseg ,   cartId , setCartId , addProductToCart , upditingCart , totalCartPryse , setTotalCartPryse , numOfCartItems , setNumOfCartItems , removeCart , cleareAllProductInCart , setAllProduct , allProduct , setCaunt , caunt} }>
+    return <cartContext.Provider value={ { userId , setUserId , addProductInWishList , setStatuseMaseg , statuseMaseg ,   cartId , setCartId , addProductToCart , upditingCart , totalCartPryse , setTotalCartPryse , numOfCartItems , setNumOfCartItems , removeCart , cleareAllProductInCart , setAllProduct , allProduct , setCaunt , caunt} }>
         {children}
     </cartContext.Provider>
 }

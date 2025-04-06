@@ -1,6 +1,5 @@
   import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
-import { useQuery } from 'react-query'
 import Loding from '../LODING/Loding'
 import { cartContext } from '../CART-CONTEXT/CartContext'
 import { Link } from 'react-router-dom'
@@ -17,7 +16,7 @@ import { Helmet } from 'react-helmet'
     
 
 
-      let { cartId ,  setCartId ,  myToken , setMyToken , addProductToCart , upditingCart , totalCartPryse , setTotalCartPryse , numOfCartItems , setNumOfCartItems , removeCart , cleareAllProductInCart , setAllProduct , allProduct , setCaunt , caunt } = useContext( cartContext )
+      let {  cartId ,  setCartId ,  myToken , setMyToken , addProductToCart , upditingCart , totalCartPryse , setTotalCartPryse , numOfCartItems , setNumOfCartItems , removeCart , cleareAllProductInCart , setAllProduct , allProduct , setCaunt , caunt } = useContext( cartContext )
     
 
                 async function displayProductInCar() {
@@ -27,13 +26,15 @@ import { Helmet } from 'react-helmet'
                     })
 
                         setCartId(data.data._id)
-                        setAllProductCart( data.data.products )
+                        localStorage.setItem("cartOwner", data.data.cartOwner)
+                        setAllProductCart( data.data.products)
                         setTotalCartPryse( data.data.totalCartPrice )
                         setTotalCartPrice(data.data.totalCartPrice)
                         
+ 
             }
             catch(err){
-              console.log(" مش اتضافه " , err );
+              console.log( "cartId" , cartId );
             }
                   }
 
@@ -42,7 +43,7 @@ import { Helmet } from 'react-helmet'
                   } , [ displayProductInCar ] )
                   
                    useEffect( ()=>{
-                                  Aos.init({ easing: 'ease-in-out', duration : 1500})
+                          Aos.init({ easing: 'ease-in-out', duration : 1500})
                     } , [])
   
 
@@ -149,11 +150,11 @@ import { Helmet } from 'react-helmet'
 
       <div className=' grid lg:grid-cols-2 md:grid-cols-1 gap-2 mt-2'>
       <Link to="/Payment" className=' capitalize bg-blue-700  hover:bg-blue-800 transition-all duration-150 text-white  flex justify-center items-center p-3  rounded-lg'>
-        confirm payment
+        cash on delivery
       </Link>
 
       <Link to="/CheckoutPage" className=' capitalize bg-blue-700  hover:bg-blue-800 transition-all duration-150 text-white  flex justify-center items-center p-3  rounded-lg'>
-        onlyne payment
+        online payment
       </Link>
       </div>
 

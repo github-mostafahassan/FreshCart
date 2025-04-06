@@ -1,16 +1,12 @@
 
-import { createBrowserRouter, createHashRouter, RouterProvider } from 'react-router-dom';
+import {  createHashRouter, RouterProvider } from 'react-router-dom';
 import './App.css';
 import LayOut from './COMPONENT/LAYOUT/LayOut';
-
 import Login from './COMPONENT/LOGIN/Login';
-
 import Register from './COMPONENT/REGISTER/Register';
-
 import Cart from './COMPONENT/CART/Cart';
 import AutheContextProvider from './COMPONENT/AUTH-CONTXT/AutheContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
-
 import ForgitPasswor from './COMPONENT/FORGIT-PASSWORD/ForgitPasswor';
 import ProtectedRouteProvider from './COMPONENT/PROTECTED-ROUTE/ProtectedRoute';
 import CartContextProvider from './COMPONENT/CART-CONTEXT/CartContext';
@@ -22,7 +18,6 @@ import NotFound from './COMPONENT/NOT-FOUND/NotFound';
 import Payment from './COMPONENT/PAYMENT/Payment';
 import CheckoutPage from './COMPONENT/Checkout Page/CheckoutPage';
 import Order from './COMPONENT/ORDER/Order';
-
 import Home from './COMPONENT/HOME/Home';
 import { Offline } from 'react-detect-offline';
 import { Helmet } from 'react-helmet';
@@ -58,7 +53,7 @@ function App() {
 
 
     ]  },
-    {path : "ProductDitelse/:id" , element :<ProtectedRouteProvider> <Suspense fallback={<Loding/>}> <ProductDitelse/>  </Suspense>  </ProtectedRouteProvider>  },
+    {path : "ProductDitelse/:id" , element : <Suspense fallback={<Loding/>}> <ProductDitelse/>  </Suspense>    },
     {path : "Categores" , element : <Suspense fallback={<Loding/>}> <Categores/> </Suspense>  },
     {path : "Brandes" , element : <Suspense fallback={<Loding/>}> <Brandes/> </Suspense>   },
     {path : "Cart" , element : <ProtectedRouteProvider> <Cart/> </ProtectedRouteProvider>  },

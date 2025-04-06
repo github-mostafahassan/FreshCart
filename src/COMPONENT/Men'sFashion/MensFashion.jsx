@@ -1,6 +1,6 @@
 
 import axios from 'axios'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { useQuery } from 'react-query'
 import MensFashionCss from "./MensFashion.module.css"
 import Loding from '../LODING/Loding'
@@ -14,7 +14,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import "aos/dist/aos.css"
-import SlyderProduct from '../SLYDER-PRODUCT/SlyderProduct'
+import toast from 'react-hot-toast'
 
 
 function MensFashion() {
@@ -30,13 +30,11 @@ function MensFashion() {
     }
 
     let { data, isLoading, isError } = useQuery("getAllProuduct", getAllProuduct)
-
-    console.log("daaaaaaa" , data);
     
 
 
     if (isError) {
-        return console.log(isError);
+        return toast.error("An error occurred while returning the products. Try again.")
         
     }
 
@@ -84,7 +82,7 @@ function MensFashion() {
                             
                                 {data.data.data.map((product, inx) => {
                                     return <>
-                                    {product.category.name == "Men's Fashion" ?  <>
+                                    {product.category.name === "Men's Fashion" ?  <>
                                     
                                         
                                         <div key={inx} className={MensFashionCss.card + " card border p-2 pb-5  text-center relative shadow-lg hover:shadow-2xl  transition-all duration-300 rounded-lg"}>

@@ -10,9 +10,11 @@ import { myContext } from '../AUTH-CONTXT/AutheContext'
 import LoginCss from "./Login.module.css"
 import { Link, useNavigate } from 'react-router-dom'
 import imgLogo from "../IMAGES/freshcart-logo.svg";
-
+import jwt_decode, { jwtDecode } from 'jwt-decode';
 import Aos from 'aos'
 import "aos/dist/aos.css"
+import toast from 'react-hot-toast'
+import { cartContext } from '../CART-CONTEXT/CartContext'
 
 
 function Login() {
@@ -21,11 +23,16 @@ function Login() {
   const [isLoding, setisLoding] = useState(false)
   let [ isError , setIsError] = useState( false )
   let [ isSucces , setIsSucces ] = useState()
+  let { userId , setUserId  } = useContext( cartContext )
+
+
 
   useEffect( ()=>{
-                      Aos.init({ easing: 'ease-in-out', duration : 1500})
+          Aos.init({ easing: 'ease-in-out', duration : 1500})
   } , [])
 
+  
+  let token = ""
 
 
   let myNavigate = useNavigate()
@@ -35,36 +42,36 @@ function Login() {
   useEffect( ()=>{
     focusInput.current.focus()
   } , [] )
+  
+
 
 
 
 
   async function sendUserData( values ) {
+
     setisLoding(true)
     await axios.post("https://ecommerce.routemisr.com/api/v1/auth/signin" , values )
     .then( (res)=>{
       setisLoding(false)
       setIsSucces(res.data.message)
-            console.log("in cacein sucses" , res);
-            console.log("myToken" , res.data.token);
             if ( res.data.token ) {
               localStorage.setItem("tkn", res.data.token);
-              setMyToken(localStorage.getItem("tkn"))
-              console.log("تم تخزين التوكن بنجاح:", res.data.token);
+
+
+              
             } else {
-              console.log("لم يتم إرسال التوكن من الخادم");
+              toast.error("We're sorry, but something went wrong. Please try again shortly")
             }
             
-            console.log("hgsfgsgfsytrw" , localStorage.getItem("tkn"));
             
             setTimeout(() => {
               myNavigate("/Home")
-            }, 3000);
+            }, 500);
             
       } ).catch( (err)=>{
         setIsError(err.response.data.message)
         setisLoding(false)
-        console.log("in cace in error" , err);
 
         setTimeout(() => {
           setIsError(false)
@@ -95,7 +102,7 @@ function Login() {
 
                 const error = {}
                 
-                let regxPassword = /^[A-Za-z0-9]{6,18}[@#$%^&*]$/
+                let regxPassword = /^[A-Za-z0-9]{6,}[@#$%^&*]{0,}$/
 
 
 
@@ -105,7 +112,7 @@ function Login() {
                 }
 
                 if (regxPassword.test(values.password) === false) {
-                  error.password = "The password must be between 6 and 18 characters long and end with one of the following special characters : @ , # , $ , % , ^ , & , *"
+                  error.password = "The password must be at least 6 characters long and must end with one of the following special characters: @, #, $, %, ^, &, *."
                 }
 
 
@@ -121,13 +128,13 @@ function Login() {
 
 <div className=' bg-gray-100 min-h-screen flex justify-center items-center'>
   
-<form  onSubmit={myFormik.handleSubmit}  className={ LoginCss.myForm + ' mt-24 mb-10 drop-shadow-lg w-[75%] bg-white m-auto p-8 rounded-lg border' }>
+<form  onSubmit={myFormik.handleSubmit}  className={ LoginCss.myForm + ' mt-24 mb-10 drop-shadow-lg w-[80%] bg-white m-auto p-8 rounded-lg border' }>
               {isSucces  ? <p className=' bg-sky-700 text-white p-7  m-auto rounded-2xl font-bold text-center'>login successful! You have successfully registered on the website.</p> : ""}
               {isError  ? <p className=' bg-red-700 text-white p-7 w-[75%] m-auto rounded-2xl font-bold text-center'>{isError} </p> : ""}
 
       <div className={LoginCss.allInput + " space-y-12 container m-auto "}>
 
-        <div className=" pb-12 w-auto">
+        <div className="  w-auto">
         <div className=' text-center  flex flex-col items-center p-3'>
             <img src={imgLogo} alt="Logo" />
           </div>
@@ -167,13 +174,7 @@ function Login() {
               </div>
             </div>
 
-            <div className=' mt-3 '>
-            <Link
-                  to={"/PasswordReset"}
-                  className="text-red-500 font-semibold text-lg hover:text-red-700 transition duration-300 ease-in-out"
-                >
-                  Forgot Password
-                </Link>            </div>
+            
           <button type='submit' className=' py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mt-5 w-full capitalize flex justify-center items-center'> 
             {isLoding ?  <RotatingLines
                 visible={true}
@@ -188,6 +189,17 @@ function Login() {
                 wrapperClass=""
                 /> : "login" }  </button>
           </div>
+          
+          <div className=' mt-2 flex flex-col lg:flex-row justify-between '>
+            <p> Don't have an account ? <Link to={"/Register"} className=' text-blue-500'>Sign up</Link></p>
+            <Link
+                  to={"/PasswordReset"}
+                  className="text-red-500  font-semibold text-sm hover:text-red-700 transition duration-300 ease-in-out"
+                >
+                  Forgot Password
+                </Link>  
+              </div>
+
         </div>
     </form>
 </div>

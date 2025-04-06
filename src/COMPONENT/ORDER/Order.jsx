@@ -1,27 +1,40 @@
 import axios from 'axios'
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { useQuery } from 'react-query'
 import Loding from '../LODING/Loding'
+import jwt_decode, { jwtDecode } from 'jwt-decode';
+
+
+
+
 
 function Order() {
-
-  async function getAllOrders() {
-    return await axios.get("https://ecommerce.routemisr.com/api/v1/orders/")
-  }
-
-  let { data, isError, isLoading } = useQuery("getAllOrders", getAllOrders)
-
-  console.log(data?.data);
   
 
+let getUserId = jwtDecode(localStorage.getItem("tkn"))
+
+
+  
+  async function getAllOrders() {
+    return await axios.get(`https://ecommerce.routemisr.com/api/v1/orders/user/${ getUserId.id }`)
+  }
+
+  let { data,  isLoading } = useQuery("getAllOrders", getAllOrders)
+
+  
+  
+  
+  
   if (isLoading) {
     return <Loding />
   }
 
-  return (
-    <div className="container py-20 m-auto px-6">
+  return <>
+  <div className="container py-20 m-auto px-6">
+    
       <div className='grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-6'>
-        {data.data.data.map((order, idx) => (
+
+          {data.data.map((order, idx) => (
           <div key={idx} className='bg-white shadow-lg rounded-lg overflow-hidden  border border-blue-500   duration-100'>
               <h3 className=' bg-gray-100 p-2 text-stone-500'>User Information :</h3>
             <div className="user p-4   rounded-b-none border-b-2">
@@ -81,41 +94,19 @@ function Order() {
 
 
 
-
-
-{/* <div key={index} className="product p-4 pb-20 grid grid-cols-2">
-              <figure className='mb-4'>
-                <img className='w-full h-auto rounded-lg object-cover'  src={prouduct?.product.imageCover} alt={prouduct?.product.title} />
-              </figure>
-              <figcaption className="text-center text-gray-700 font-semibold flex justify-center items-center">
-                <p>{prouduct?.product.title}</p>
-              </figcaption>
-            </div> */}
-
-
-
-
-
-
-
-
-
-
-
-            
-
             {/* Pricing Information */}
             <div className="pricing p-4 bg-gray-50 ">
-                <h4 className=' border text-center rounded-md py-1'>payment Method : { order.paymentMethodType == "card" ?   <i class="fa-solid fa-money-check-dollar"></i> : order.paymentMethodType } </h4>
-              <h4 className="text-gray-600">Tax Price: <span className="font-bold text-blue-600">{order.taxPrice} EGP</span></h4>
-              <h4 className="text-gray-600">Shipping Price: <span className="font-bold text-blue-600">{order.shippingPrice} EGP</span></h4>
-              <h3 className="text-xl font-semibold text-gray-800">Total Price: <span className="text-red-600">{order.totalOrderPrice} EGP</span></h3>
+                <h4 className=' border text-center rounded-md py-1'>payment Method : { order.paymentMethodType === "card" ?   <i class="fa-solid fa-money-check-dollar"></i> : order.paymentMethodType } </h4>
+              <h4 className="text-gray-600">Tax Price : <span className="font-bold text-blue-600">{ order.taxPrice == 0 ? "free" : <p>{ order.taxPrice} EGP </p>  } </span></h4>
+              <h4 className="text-gray-600">Shipping Price : <span className="font-bold text-blue-600">{order.shippingPrice == 0 ? "free" : <p>{ order.shippingPrice} EGP </p> } </span></h4>
+              <h3 className="text-xl font-semibold text-gray-800">Total Price : <span className="text-green-500">{order.totalOrderPrice} EGP</span></h3>
             </div>
           </div>
         ))}
+
       </div>
     </div>
-  )
+  </>
 }
 
 export default Order

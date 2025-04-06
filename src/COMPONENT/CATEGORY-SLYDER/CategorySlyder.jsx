@@ -32,7 +32,7 @@ function CategorySlyder() {
                 <div className="mx-auto mt-6 container  text-center m-auto">
                     <Slider className=" m-auto rounded-2xl overflow-hidden container" {...settings}>
                     {data.data.data.map( (categry , idx )=>{
-                        return <LazyLoad offset={100} once >
+                        return <LazyLoad offset={100} once key={idx} >
                             <img  className=" h-[200px] " key={ idx } src={categry.image} alt={categry.name} />
                              </LazyLoad> 
                     } )}

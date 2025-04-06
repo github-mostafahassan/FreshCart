@@ -1,7 +1,7 @@
 import axios from 'axios';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Loding from '../LODING/Loding';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -26,13 +26,15 @@ function ProductDitelse() {
         return axios.get(`https://ecommerce.routemisr.com/api/v1/products/${id}`);
     }
 
-    let { data, isError, isLoading } = useQuery("gitProductDitelse", gitProductDitelse);
+    let { data,  isLoading } = useQuery("gitProductDitelse", gitProductDitelse);
 
+            let [ selectedImg , setSelectedImg ] = useState(null)
 
-    if (isError) {
-        console.log("mostafa");
-        
-    }
+            useEffect( ()=>{
+                if ( data && data.data && data.data.data ) {
+                    setSelectedImg(data?.data?.data?.imageCover)
+                }
+            } , [data] )
 
 
     if (isLoading) {
@@ -56,14 +58,7 @@ function ProductDitelse() {
         <>
             <div className="container mx-auto p-12 mt-20 ">
                 <div className="content lg:w-[80%] m-auto">
-                {/* Slider for images */}
-                {/* <Slider className=' mb-10 rounded-3xl overflow-hidden' {...settings}>
-                    {data.data.data.images.map((img, index) => {
-                        return <div key={ index } className=' flex '>
-                                <LazyLoadImage loading='lazy' effect='opacity' className='w-full  ' src={img} alt={`Product image ${index + 1}`} key={index} />
-                        </div> 
-                    })}
-                </Slider> */}
+
 
                 {/* Product details */}
                 <div className="flex flex-col md:flex-row p-6 bg-white rounded-lg shadow-lg mt-8 border">
@@ -75,7 +70,7 @@ function ProductDitelse() {
                             effect='opacity'
                             style={{ width: "75%" }}
                             className="h-auto object-cover rounded-lg m-auto shadow-md"
-                            src={data.data.data.imageCover}
+                            src={selectedImg}
                             alt={data.data.data.title}
                         />
                     </figure>
@@ -96,8 +91,8 @@ function ProductDitelse() {
                                 </h3>
                             </div>
                         ) : (
-                            <h3 className="text-2xl font-bold text-red-500 mb-6">
-                                السعر: {data.data.data.price} جنيه
+                            <h3 className="text-2xl font-bold capitalize mb-6">
+                                Price: {data.data.data.price} EGP
                             </h3>
                         )}
 
@@ -105,8 +100,8 @@ function ProductDitelse() {
                         <div className=' w-full  text-white grid lg:grid-cols-1 my-3 '>
                         <Slider className='  rounded-3xl overflow-hidden' {...settings}>
                             {data.data.data.images.map((img, index) => {
-                                return <div key={ index } className=' flex '>
-                                        <LazyLoadImage loading='lazy' effect='opacity' className='w-full  ' src={img} alt={`Product image ${index + 1}`} key={index} />
+                                return <div key={ index } className=' flex px-1'>
+                                        <LazyLoadImage onClick={ ()=>{  setSelectedImg(img)} } loading='lazy' effect='opacity' className='w-full  ' src={img} alt={`Product image ${index + 1}`} key={index} />
                                 </div> 
                             })}
                         </Slider>
@@ -120,6 +115,7 @@ function ProductDitelse() {
                         </button>
                     </figcaption>
                 </div>
+                <Link className=' py-2 text-red-500 font-bold' to={"/Home"}> Back to the main page </Link>
                 </div>
             </div>
         </>
